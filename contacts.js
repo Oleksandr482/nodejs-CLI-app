@@ -5,32 +5,46 @@ require("colors");
 const contactsPath = path.resolve("./db/contacts.json");
 
 async function listContacts() {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  const parsedData = await JSON.parse(data);
-  await console.log(parsedData);
+  try {
+    const data = await fs.readFile(contactsPath, "utf-8");
+    const parsedData = await JSON.parse(data);
+    await console.log(parsedData);
+  } catch (e) {
+    console.warn(e);
+  }
 }
 
 async function getContactById(contactId) {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  const parsedData = await JSON.parse(data);
-  const result = await parsedData.find((item) => Number(item.id) === contactId);
-  console.log(result);
+  try {
+    const data = await fs.readFile(contactsPath, "utf-8");
+    const parsedData = await JSON.parse(data);
+    const result = await parsedData.find(
+      (item) => Number(item.id) === contactId
+    );
+    console.log(result);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 async function removeContact(contactId) {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  const parsedData = await JSON.parse(data);
-  const delContact = await parsedData.find(
-    (item) => Number(item.id) === contactId
-  );
-  if (delContact) {
-    const index = parsedData.indexOf(delContact);
-    parsedData.splice(index, 1);
-    await fs.writeFile(contactsPath, JSON.stringify(parsedData), "utf-8");
-  } else {
-    return console.log(`Contact with id=${contactId} not found!!!`.red);
+  try {
+    const data = await fs.readFile(contactsPath, "utf-8");
+    const parsedData = await JSON.parse(data);
+    const delContact = await parsedData.find(
+      (item) => Number(item.id) === contactId
+    );
+    if (delContact) {
+      const index = parsedData.indexOf(delContact);
+      parsedData.splice(index, 1);
+      await fs.writeFile(contactsPath, JSON.stringify(parsedData), "utf-8");
+    } else {
+      return console.log(`Contact with id=${contactId} not found!!!`.red);
+    }
+    await console.log(`Contact with id=${contactId} is removed`.green);
+  } catch (e) {
+    console.error(e);
   }
-  await console.log(`Contact with id=${contactId} is removed`.green);
 }
 
 async function addContact(name, email, phone) {
